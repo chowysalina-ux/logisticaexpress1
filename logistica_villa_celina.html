@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogiVilla — Paquetería desde Villa Celina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0f0f0e;
+  --bg2:      #181817;
+  --bg3:      #222220;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #e8e6df;
+  --muted:    #888780;
+  --faint:    #444440;
+  --amber:    #e8a435;
+  --amber-bg: rgba(232,164,53,0.12);
+  --amber-dim: rgba(232,164,53,0.06);
+  --green:    #5cb87a;
+  --green-bg: rgba(92,184,122,0.1);
+  --blue:     #5b9bd5;
+  --blue-bg:  rgba(91,155,213,0.1);
+  --red:      #d46b6b;
+  --red-bg:   rgba(212,107,107,0.1);
+  --orange-bg:rgba(220,130,60,0.1);
+  --orange:   #dc823c;
+  --r:        10px;
+  --r-sm:     6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  background: rgba(15,15,14,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-dot {
+  width: 8px; height: 8px;
+  background: var(--amber);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:0.5; transform:scale(0.8); }
+}
+.header-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── LAYOUT ── */
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.tab {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  position: relative;
+  transition: color .15s;
+  letter-spacing: 0.01em;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  color: var(--amber);
+}
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: var(--amber);
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── STAT CARDS ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-value.amber { color: var(--amber); }
+.stat-value.green { color: var(--green); }
+
+/* ── SECTION ── */
+.section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.section-head {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.section-head span { color: var(--text); }
+
+/* ── TABLE ── */
+.pkg-list { width: 100%; }
+.pkg-row {
+  display: grid;
+  grid-template-columns: 28px 140px 1fr 130px 120px 70px 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  transition: background .1s;
+}
+.pkg-row:hover { background: var(--bg3); }
+.pkg-row:last-child { border-bottom: none; }
+.pkg-num { font-family: 'DM Mono', monospace; color: var(--faint); font-size: 0.75rem; }
+.pkg-dest { font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pkg-dir { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pkg-time { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--faint); text-align: right; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-cap   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid rgba(91,155,213,0.2); }
+.badge-1c    { background: var(--green-bg);  color: var(--green);  border: 1px solid rgba(92,184,122,0.2); }
+.badge-2c    { background: var(--amber-bg);  color: var(--amber);  border: 1px solid rgba(232,164,53,0.2); }
+.badge-3c    { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(220,130,60,0.2); }
+.badge-none  { background: var(--bg3); color: var(--faint); border: 1px solid var(--border); }
+
+/* ── STATUS SELECT ── */
+.status-sel {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+}
+.status-sel:focus { border-color: var(--amber); }
+.status-sel.st-pendiente { color: var(--muted); }
+.status-sel.st-en_camino { color: var(--blue); }
+.status-sel.st-entregado  { color: var(--green); }
+
+/* ── ADD FORM ── */
+.add-form {
+  display: grid;
+  grid-template-columns: 160px 1fr 140px 130px auto;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg3);
+}
+input[type="text"], input[type="number"], select {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+input[type="text"]::placeholder,
+input[type="number"]::placeholder { color: var(--faint); }
+input:focus, select:focus { border-color: var(--amber); }
+select option { background: var(--bg2); }
+
+/* ── BUTTONS ── */
+.btn {
+  background: var(--amber);
+  color: #0f0f0e;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  white-space: nowrap;
+}
+.btn:hover { opacity: 0.88; }
+.btn:active { transform: scale(0.97); }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+.btn-del {
+  background: none; border: none;
+  color: var(--faint); font-size: 1rem;
+  cursor: pointer; padding: 0 4px;
+  transition: color .15s;
+  line-height: 1;
+}
+.btn-del:hover { color: var(--red); }
+
+/* ── EMPTY STATE ── */
+.empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 0.85rem;
+}
+.empty-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  opacity: 0.3;
+}
+
+/* ── TARIFAS ── */
+.tarifa-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 20px 100px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.tarifa-row:last-child { border-bottom: none; }
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--amber);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+  transition: transform .1s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--amber);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+}
+.tarifa-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--amber);
+  text-align: right;
+}
+
+/* ── REPARTIDOR ── */
+.rep-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px 18px;
+}
+.rep-grid input { width: 100%; }
+.rep-full { grid-column: 1 / -1; }
+
+/* ── CALCULADORA ── */
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.result-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color .2s;
+}
+.result-card.featured {
+  border-color: var(--amber);
+  background: var(--amber-dim);
+}
+.result-card .rc-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.result-card .rc-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.result-card.featured .rc-value { color: var(--amber); }
+.result-card .rc-range {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── DIST ROWS ── */
+.dist-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 52px 16px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.dist-row:last-child { border-bottom: none; }
+.pct-warn {
+  font-size: 0.75rem;
+  color: var(--red);
+  padding: 8px 18px;
+  display: none;
+}
+
+/* ── DESGLOSE ── */
+.desglose-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.desglose-row:last-child { border-bottom: none; }
+.desglose-detail { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+.desglose-val { font-family: 'DM Mono', monospace; color: var(--amber); font-weight: 500; }
+.total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--amber-dim);
+  border-top: 1px solid rgba(232,164,53,0.2);
+  font-weight: 500;
+}
+.total-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.2rem;
+  color: var(--amber);
+}
+
+/* ── RESUMEN ── */
+.resumen-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.resumen-row:last-child { border-bottom: none; }
+.resumen-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  font-weight: 500;
+  font-size: 1rem;
+  background: var(--amber-dim);
+  border-top: 1px solid rgba(232,164,53,0.2);
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 12px 18px;
+  font-size: 0.82rem;
+  color: var(--green);
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all .2s;
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .pkg-row { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; }
+  .add-form { grid-template-columns: 1fr 1fr; }
+  .add-form .btn { grid-column: 1 / -1; }
+  .calc-grid { grid-template-columns: 1fr; }
+  .result-cards { grid-template-columns: 1fr; }
+  header { padding: 0 16px; }
+  .shell { padding: 16px 12px 60px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    LogiVilla
+  </div>
+  <div class="header-meta" id="header-date">—</div>
+</header>
+
+<div class="shell">
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total paquetes</div>
+      <div class="stat-value" id="s-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pendientes</div>
+      <div class="stat-value" id="s-pending">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Entregados hoy</div>
+      <div class="stat-value green" id="s-done">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Costo del día</div>
+      <div class="stat-value amber" id="s-costo">$0</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('paquetes')">Paquetes</button>
+    <button class="tab" onclick="showTab('tarifas')">Tarifas</button>
+    <button class="tab" onclick="showTab('calculadora')">Calculadora semanal</button>
+    <button class="tab" onclick="showTab('resumen')">Resumen</button>
+  </div>
+
+  <!-- ── TAB: PAQUETES ── -->
+  <div class="tab-panel active" id="tp-paquetes">
+    <div class="section">
+      <div class="section-head">
+        <span>Paquetes del día</span>
+        <span id="pkg-count" style="font-family:'DM Mono',monospace;font-size:0.78rem">0 paquetes</span>
+      </div>
+      <div id="pkg-list">
+        <div class="empty">
+          <div class="empty-icon">📦</div>
+          Aún no hay paquetes. Usá el formulario de abajo para agregar.
+        </div>
+      </div>
+      <div class="add-form">
+        <input type="text" id="inp-dest" placeholder="Destinatario" maxlength="40">
+        <input type="text" id="inp-dir"  placeholder="Dirección / referencia" maxlength="70">
+        <select id="inp-zona">
+          <option value="">── Zona ──</option>
+          <option value="0">Capital Federal</option>
+          <option value="1">1° Cordón</option>
+          <option value="2">2° Cordón</option>
+          <option value="3">3° Cordón</option>
+        </select>
+        <select id="inp-estado">
+          <option value="pendiente">Pendiente</option>
+          <option value="en_camino">En camino</option>
+          <option value="entregado">Entregado</option>
+        </select>
+        <button class="btn" onclick="addPkg()">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: TARIFAS ── -->
+  <div class="tab-panel" id="tp-tarifas">
+    <div class="section" style="margin-bottom:16px">
+      <div class="section-head"><span>Precio por paquete según zona</span></div>
+      <div id="tarifas-list"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><span>Repartidor asignado</span></div>
+      <div class="rep-grid">
+        <input type="text" id="rep-nombre" placeholder="Nombre / apodo">
+        <input type="text" id="rep-tel"    placeholder="Teléfono / WhatsApp">
+        <input type="text" id="rep-vehiculo" class="rep-full" placeholder="Vehículo (moto, auto, camioneta…)">
+        <input type="text" id="rep-notas"    class="rep-full" placeholder="Notas adicionales (horarios, condiciones…)">
+        <div class="rep-full" style="padding-top:4px">
+          <button class="btn" onclick="saveRep()">Guardar datos del repartidor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: CALCULADORA ── -->
+  <div class="tab-panel" id="tp-calculadora">
+
+    <!-- Results -->
+    <div class="result-cards">
+      <div class="result-card">
+        <div class="rc-label">Costo diario</div>
+        <div class="rc-value" id="rc-dia">—</div>
+        <div class="rc-range" id="rc-dia-pkg"></div>
+      </div>
+      <div class="result-card featured">
+        <div class="rc-label" style="color:var(--amber)">Costo semanal</div>
+        <div class="rc-value" id="rc-semana">—</div>
+        <div class="rc-range" id="rc-rango">30–35 paq/día</div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">Estimado mensual</div>
+        <div class="rc-value" id="rc-mes">—</div>
+        <div class="rc-range">× 4.3 semanas</div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Izq: sliders control -->
+      <div>
+        <div class="section" style="margin-bottom:14px">
+          <div class="section-head"><span>Parámetros</span></div>
+          <div style="padding:14px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:0.82rem;color:var(--muted)">Paquetes por día</span>
+              <span style="font-family:'DM Mono',monospace;font-size:1rem;color:var(--amber)" id="out-pkg">32</span>
+            </div>
+            <input type="range" min="20" max="50" value="32" id="sl-pkg" oninput="calcSem()">
+            <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--faint);margin-top:4px">
+              <span>20</span><span>50</span>
+            </div>
+          </div>
+          <div style="padding:4px 18px 14px;font-size:0.82rem;color:var(--muted);border-top:1px solid var(--border)">
+            Días por semana: <span style="color:var(--text);font-weight:500">6 (lun–sáb)</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><span>Distribución por zona</span></div>
+          <div id="dist-list"></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 18px;font-size:0.82rem;border-top:1px solid var(--border)">
+            <span style="color:var(--muted)">Total</span>
+            <span id="pct-total" style="font-family:'DM Mono',monospace;font-weight:500">100%</span>
+          </div>
+          <div class="pct-warn" id="pct-warn">⚠ La suma de porcentajes debe ser 100%</div>
+        </div>
+      </div>
+
+      <!-- Der: tarifas + desglose -->
+      <div>
+        <div class="section" style="margin-bottom:14px">
+          <div class="section-head"><span>Tarifa por zona</span></div>
+          <div id="calc-tarifas"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><span>Desglose diario</span></div>
+          <div id="desglose-calc"></div>
+          <div class="total-row">
+            <span>Total por día</span>
+            <span class="total-val" id="total-calc">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: RESUMEN ── -->
+  <div class="tab-panel" id="tp-resumen">
+    <div class="section">
+      <div class="section-head"><span>Resumen del día</span></div>
+      <div id="resumen-body"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──
+const ZONAS = [
+  { id:0, nombre:'Capital Federal', badge:'badge-cap' },
+  { id:1, nombre:'1° Cordón',       badge:'badge-1c'  },
+  { id:2, nombre:'2° Cordón',       badge:'badge-2c'  },
+  { id:3, nombre:'3° Cordón',       badge:'badge-3c'  },
+];
+const EST_LABEL = { pendiente:'Pendiente', en_camino:'En camino', entregado:'Entregado' };
+
+let paquetes = JSON.parse(localStorage.getItem('lv_pkgs') || '[]');
+let tarifas  = JSON.parse(localStorage.getItem('lv_tar')  || '[3500,4000,5500,7000]');
+let dists    = JSON.parse(localStorage.getItem('lv_dist') || '[35,50,10,5]');
+let repData  = JSON.parse(localStorage.getItem('lv_rep')  || '{}');
+let counter  = paquetes.reduce((m,p) => Math.max(m,p.id), 0);
+
+// ── PERSIST ──
+function save() {
+  localStorage.setItem('lv_pkgs', JSON.stringify(paquetes));
+  localStorage.setItem('lv_tar',  JSON.stringify(tarifas));
+  localStorage.setItem('lv_dist', JSON.stringify(dists));
+}
+
+// ── TABS ──
+const TAB_IDS = ['paquetes','tarifas','calculadora','resumen'];
+function showTab(t) {
+  TAB_IDS.forEach(id => {
+    document.getElementById('tp-'+id).classList.toggle('active', id === t);
+    document.querySelectorAll('.tab')[TAB_IDS.indexOf(id)].classList.toggle('active', id === t);
+  });
+  if (t === 'resumen') renderResumen();
+  if (t === 'calculadora') calcSem();
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── FORMAT ──
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
+function fmtTime(d) {
+  return new Date(d).toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ── STATS ──
+function updateStats() {
+  const total   = paquetes.length;
+  const pending = paquetes.filter(p => p.estado === 'pendiente' || p.estado === 'en_camino').length;
+  const done    = paquetes.filter(p => p.estado === 'entregado').length;
+  const costo   = paquetes.reduce((s,p) => s + (p.zona !== null && p.zona !== undefined ? tarifas[p.zona] : 0), 0);
+  document.getElementById('s-total').textContent   = total;
+  document.getElementById('s-pending').textContent = pending;
+  document.getElementById('s-done').textContent    = done;
+  document.getElementById('s-costo').textContent   = fmt(costo);
+  document.getElementById('pkg-count').textContent = total + ' paquete' + (total !== 1 ? 's' : '');
+}
+
+// ── PAQUETES ──
+function addPkg() {
+  const dest   = document.getElementById('inp-dest').value.trim();
+  const dir    = document.getElementById('inp-dir').value.trim();
+  const zonaV  = document.getElementById('inp-zona').value;
+  const estado = document.getElementById('inp-estado').value;
+  if (!dest) { document.getElementById('inp-dest').focus(); return; }
+  const pkg = { id: ++counter, dest, dir, zona: zonaV === '' ? null : +zonaV, estado, ts: Date.now() };
+  paquetes.push(pkg);
+  save();
+  document.getElementById('inp-dest').value = '';
+  document.getElementById('inp-dir').value  = '';
+  document.getElementById('inp-zona').value = '';
+  renderPkgs();
+  updateStats();
+  toast('✓ Paquete agregado');
+}
+
+function delPkg(id) {
+  if (!confirm('¿Eliminar este paquete?')) return;
+  paquetes = paquetes.filter(p => p.id !== id);
+  save();
+  renderPkgs();
+  updateStats();
+}
+
+function setEstado(id, val) {
+  const p = paquetes.find(x => x.id === id);
+  if (p) { p.estado = val; save(); updateStats(); }
+}
+
+function renderPkgs() {
+  const el = document.getElementById('pkg-list');
+  if (!paquetes.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>Aún no hay paquetes. Usá el formulario de abajo para agregar.</div>';
+    return;
+  }
+  el.innerHTML = paquetes.map(p => {
+    const z = p.zona !== null && p.zona !== undefined ? ZONAS[p.zona] : null;
+    const badge = z
+      ? `<span class="badge ${z.badge}">${z.nombre}</span>`
+      : `<span class="badge badge-none">Sin zona</span>`;
+    return `<div class="pkg-row">
+      <span class="pkg-num">#${p.id}</span>
+      <span class="pkg-dest" title="${p.dest}">${p.dest}</span>
+      <span class="pkg-dir"  title="${p.dir || '—'}">${p.dir || '—'}</span>
+      ${badge}
+      <select class="status-sel st-${p.estado}" onchange="setEstado(${p.id},this.value);this.className='status-sel st-'+this.value">
+        <option value="pendiente"  ${p.estado==='pendiente' ?'selected':''}>⏳ Pendiente</option>
+        <option value="en_camino"  ${p.estado==='en_camino' ?'selected':''}>🚚 En camino</option>
+        <option value="entregado"  ${p.estado==='entregado' ?'selected':''}>✓ Entregado</option>
+      </select>
+      <span class="pkg-time">${fmtTime(p.ts)}</span>
+      <button class="btn-del" onclick="delPkg(${p.id})" title="Eliminar">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── TARIFAS ──
+function renderTarifas() {
+  document.getElementById('tarifas-list').innerHTML = ZONAS.map((z,i) => `
+    <div class="tarifa-row">
+      <span class="badge ${z.badge}">${z.nombre}</span>
+      <input type="range" min="500" max="10000" step="100" value="${tarifas[i]}"
+        id="slr-${i}" oninput="tarifas[${i}]=+this.value;document.getElementById('tp-${i}').textContent=fmt(tarifas[${i}]);save();updateStats();calcSem()">
+      <span class="tarifa-price" id="tp-${i}">${fmt(tarifas[i])}</span>
+    </div>
+  `).join('');
+}
+
+function renderCalcTarifas() {
+  document.getElementById('calc-tarifas').innerHTML = ZONAS.map((z,i) => `
+    <div class="tarifa-row">
+      <span class="badge ${z.badge}">${z.nombre}</span>
+      <input type="range" min="500" max="10000" step="100" value="${tarifas[i]}"
+        id="slc-${i}" oninput="tarifas[${i}]=+this.value;document.getElementById('slr-${i}').value=${i};save();calcSem()">
+      <span class="tarifa-price" id="tcp-${i}">${fmt(tarifas[i])}</span>
+    </div>
+  `).join('');
+}
+
+// ── REPARTIDOR ──
+function loadRep() {
+  if (repData.nombre)   document.getElementById('rep-nombre').value   = repData.nombre;
+  if (repData.tel)      document.getElementById('rep-tel').value      = repData.tel;
+  if (repData.vehiculo) document.getElementById('rep-vehiculo').value = repData.vehiculo;
+  if (repData.notas)    document.getElementById('rep-notas').value    = repData.notas;
+}
+function saveRep() {
+  repData = {
+    nombre:   document.getElementById('rep-nombre').value.trim(),
+    tel:      document.getElementById('rep-tel').value.trim(),
+    vehiculo: document.getElementById('rep-vehiculo').value.trim(),
+    notas:    document.getElementById('rep-notas').value.trim(),
+  };
+  localStorage.setItem('lv_rep', JSON.stringify(repData));
+  toast('✓ Datos del repartidor guardados');
+}
+
+// ── CALCULADORA ──
+function renderDist() {
+  document.getElementById('dist-list').innerHTML = ZONAS.map((z,i) => `
+    <div class="dist-row">
+      <span class="badge ${z.badge}">${z.nombre}</span>
+      <input type="range" min="0" max="100" step="5" value="${dists[i]}"
+        id="sld-${i}" oninput="dists[${i}]=+this.value;document.getElementById('nd-${i}').value=dists[${i}];save();calcSem()">
+      <input type="number" id="nd-${i}" value="${dists[i]}" min="0" max="100"
+        style="width:52px;text-align:right;font-size:0.8rem"
+        oninput="dists[${i}]=+this.value;document.getElementById('sld-${i}').value=dists[${i}];save();calcSem()">
+      <span style="font-size:0.8rem;color:var(--muted)">%</span>
+    </div>
+  `).join('');
+}
+
+function calcSem() {
+  const pkg = +document.getElementById('sl-pkg').value;
+  document.getElementById('out-pkg').textContent = pkg;
+
+  // Sync tarifa displays
+  ZONAS.forEach((_,i) => {
+    const el = document.getElementById('tcp-'+i);
+    if (el) el.textContent = fmt(tarifas[i]);
+    const sl = document.getElementById('slc-'+i);
+    if (sl) sl.value = tarifas[i];
+  });
+
+  const totalPct = dists.reduce((s,x) => s+x, 0);
+  const ptEl = document.getElementById('pct-total');
+  ptEl.textContent = totalPct + '%';
+  ptEl.style.color = totalPct === 100 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('pct-warn').style.display = totalPct !== 100 ? '' : 'none';
+
+  const costoDia = ZONAS.reduce((s,_,i) => s + pkg * dists[i]/100 * tarifas[i], 0);
+  const c30      = ZONAS.reduce((s,_,i) => s + 30  * dists[i]/100 * tarifas[i], 0);
+  const c35      = ZONAS.reduce((s,_,i) => s + 35  * dists[i]/100 * tarifas[i], 0);
+  const semana   = costoDia * 6;
+  const mes      = semana * 4.33;
+
+  document.getElementById('rc-dia').textContent    = fmt(costoDia);
+  document.getElementById('rc-dia-pkg').textContent = pkg + ' paquetes';
+  document.getElementById('rc-semana').textContent = fmt(semana);
+  document.getElementById('rc-rango').textContent  = fmt(c30*6) + ' – ' + fmt(c35*6);
+  document.getElementById('rc-mes').textContent    = fmt(mes);
+
+  // Desglose
+  document.getElementById('desglose-calc').innerHTML = ZONAS.map((z,i) => {
+    const pkgsZ = Math.round(pkg * dists[i] / 100);
+    const sub   = pkgsZ * tarifas[i];
+    return `<div class="desglose-row">
+      <span class="badge ${z.badge}">${z.nombre}</span>
+      <span class="desglose-detail">${pkgsZ} paq × ${fmt(tarifas[i])}</span>
+      <span class="desglose-val">${fmt(sub)}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('total-calc').textContent = fmt(costoDia);
+}
+
+// ── RESUMEN ──
+function renderResumen() {
+  const body = document.getElementById('resumen-body');
+  const porZona = ZONAS.map((z,i) => {
+    const pkgs = paquetes.filter(p => p.zona === z.id);
+    return { z, i, pkgs, sub: pkgs.length * tarifas[i] };
+  }).filter(x => x.pkgs.length > 0);
+
+  if (!paquetes.length) {
+    body.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Agregá paquetes para ver el resumen del día.</div>';
+    return;
+  }
+
+  const total    = porZona.reduce((s,x) => s + x.sub, 0);
+  const sinZona  = paquetes.filter(p => p.zona === null || p.zona === undefined).length;
+  const entregados = paquetes.filter(p => p.estado === 'entregado').length;
+
+  const repLine = repData.nombre
+    ? `<div class="resumen-row"><span style="color:var(--muted)">Repartidor</span><span><strong>${repData.nombre}</strong>${repData.tel ? ' · ' + repData.tel : ''}${repData.vehiculo ? ' · ' + repData.vehiculo : ''}</span></div>`
+    : '';
+
+  body.innerHTML = repLine +
+    `<div class="resumen-row" style="background:var(--bg3)">
+      <span style="color:var(--muted)">Total paquetes</span>
+      <span><strong>${paquetes.length}</strong> — ${entregados} entregados</span>
+    </div>` +
+    porZona.map(x => `
+      <div class="resumen-row">
+        <span><span class="badge ${x.z.badge}">${x.z.nombre}</span></span>
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.8rem">${x.pkgs.length} × ${fmt(tarifas[x.i])}</span>
+        <span style="font-family:'DM Mono',monospace;font-weight:500;color:var(--amber)">${fmt(x.sub)}</span>
+      </div>
+    `).join('') +
+    (sinZona ? `<div class="resumen-row" style="color:var(--faint)"><span>Sin zona asignada</span><span>${sinZona} paquete${sinZona!==1?'s':''}</span><span>—</span></div>` : '') +
+    `<div class="resumen-total">
+      <span>Total a pagar al repartidor</span>
+      <span style="font-family:'DM Mono',monospace;color:var(--amber);font-size:1.2rem">${fmt(total)}</span>
+    </div>`;
+}
+
+// ── HEADER DATE ──
+function updateDate() {
+  const now = new Date();
+  document.getElementById('header-date').textContent =
+    now.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }) + ' · ' +
+    now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ── INIT ──
+updateDate();
+setInterval(updateDate, 30000);
+renderPkgs();
+renderTarifas();
+renderCalcTarifas();
+renderDist();
+loadRep();
+updateStats();
+calcSem();
+</script>
+</body>
+</html>
